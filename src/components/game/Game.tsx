@@ -9,6 +9,7 @@ export interface gameState{
     cells:any
     isRunning:boolean
     interval:number
+    cycle:number
 }
 
 const CELL_SIZE = 20;
@@ -29,6 +30,7 @@ export default class Game extends React.Component<gameProps, gameState>{
         cells: [],
         isRunning: false,
         interval: 100,
+        cycle:0
     }
     
     this.rows = HEIGHT / CELL_SIZE;
@@ -121,7 +123,7 @@ export default class Game extends React.Component<gameProps, gameState>{
             }
         }
         this.board = newBoard
-        this.setState({ cells: this.makeCells() })
+        this.setState({ cells: this.makeCells(), cycle: this.state.cycle+1 })
         if(this.state.isRunning){
             this.timeoutHandler = window.setTimeout(() => {
                 this.runIteration();
@@ -145,7 +147,7 @@ export default class Game extends React.Component<gameProps, gameState>{
     }
     handleClear() {
         this.board = this.makeEmptyBoard();
-        this.setState({ cells: this.makeCells() })
+        this.setState({ cells: this.makeCells(), cycle: 0 })
     }
     handleRandom() {
         for (let y = 0; y < this.rows; y++) {
@@ -159,6 +161,7 @@ export default class Game extends React.Component<gameProps, gameState>{
         return (
             <div className="container">
                 <h1 className="display-1"> Game Of Life</h1>
+                <span>Cycles {this.state.cycle}</span>
                 <div className="controls">
                     <img className="icon" src={rabbit} alt="Rabbit"/>
                     <div className="slider-container">
