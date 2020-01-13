@@ -1,6 +1,6 @@
 import React from 'react';
 import Cell from './../cell/Cell'
-import rabbit from './../../img/rabbit.png'; // Tell Webpack this JS file uses this image
+import rabbit from './../../img/rabbit.png'
 import turtle from './../../img/turtle.png'
 export interface gameProps{
 }
@@ -46,7 +46,6 @@ export default class Game extends React.Component<gameProps, gameState>{
     this.handleClear = this.handleClear.bind(this)
     this.handleRandom = this.handleRandom.bind(this)
     }
-
     makeEmptyBoard() {
         let board = [] as any;
         for (let y = 0; y < this.rows; y++) {
@@ -57,7 +56,6 @@ export default class Game extends React.Component<gameProps, gameState>{
         }
         return board;
     }
-
     getElementOffset() {
         if(this.boardRef){
             const rect = this.boardRef.getBoundingClientRect()
@@ -68,7 +66,6 @@ export default class Game extends React.Component<gameProps, gameState>{
             };
         }
     }
-
     makeCells() {
         let cells = [];
         for (let y = 0; y < this.rows; y++) {
@@ -80,7 +77,6 @@ export default class Game extends React.Component<gameProps, gameState>{
         }
         return cells;
     }
-
     handleClick(event:any){
         const elemOffset = this.getElementOffset();
         if(elemOffset){
@@ -94,12 +90,11 @@ export default class Game extends React.Component<gameProps, gameState>{
             this.setState({ cells: this.makeCells() })
         }
     }
-
     runGame() {
-        this.setState({ isRunning: true })
-        this.runIteration()
+        this.setState({ isRunning: true },()=>{
+            this.runIteration()
+        })
     }
-
     stopGame() {
         this.setState({ isRunning: false })
         if (this.timeoutHandler) {
@@ -107,7 +102,6 @@ export default class Game extends React.Component<gameProps, gameState>{
             this.timeoutHandler = null
         }
     }
-
     runIteration() {
         let newBoard = this.makeEmptyBoard() as any;
         for (let y = 0; y < this.rows; y++) {
@@ -126,13 +120,14 @@ export default class Game extends React.Component<gameProps, gameState>{
                 }
             }
         }
-        this.board = newBoard;
-        this.setState({ cells: this.makeCells() });
-        this.timeoutHandler = window.setTimeout(() => {
-            this.runIteration();
-        }, this.state.interval);
+        this.board = newBoard
+        this.setState({ cells: this.makeCells() })
+        if(this.state.isRunning){
+            this.timeoutHandler = window.setTimeout(() => {
+                this.runIteration();
+            }, this.state.interval);
+        }
     }
-
     calculateNeighbors(board:any, x:number, y:number) {
         let neighbors = 0;
         const dirs = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]];
@@ -145,16 +140,13 @@ export default class Game extends React.Component<gameProps, gameState>{
         }
         return neighbors;
     }
-
     handleIntervalChange(event:any){
         this.setState({ interval: event.target.value })
     }
-
     handleClear() {
         this.board = this.makeEmptyBoard();
         this.setState({ cells: this.makeCells() })
     }
-
     handleRandom() {
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
@@ -163,9 +155,7 @@ export default class Game extends React.Component<gameProps, gameState>{
         }
         this.setState({ cells: this.makeCells() });
     }
-
     render() {
-        const { cells, isRunning } = this.state;
         return (
             <div className="container">
                 <h1 className="display-1"> Game Of Life</h1>
@@ -176,20 +166,14 @@ export default class Game extends React.Component<gameProps, gameState>{
                     </div>
                     <img className="icon" src={turtle} alt="Turtel"/>
                     <div className="button-div">
-                        {isRunning 
-                        ?<button className="btn" onClick={this.stopGame}>Stop</button>
-                        :<button className="btn" onClick={this.runGame}>Start</button>
-                        }
+                        {this.state.isRunning ?<button className="btn" onClick={this.stopGame}>Stop</button>:<button className="btn" onClick={this.runGame}>Start</button>}
                         <button className="btn" onClick={this.handleRandom}>Random</button>
+                        <button className="btn" onClick={this.runIteration}>View next step</button>
                         <button className="btn" onClick={this.handleClear}>Clear</button>
                     </div>
                 </div>
-                <div className="Board"
-                    style={{ width: WIDTH, height: HEIGHT, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}}
-                    onClick={this.handleClick}
-                    ref={(n:any) => { this.boardRef = n; }}>
-
-                    {cells.map((cell:any) => (
+                <div className="Board" style={{ width: WIDTH, height: HEIGHT, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}} onClick={this.handleClick} ref={(n:any) => { this.boardRef = n; }}>
+                    {this.state.cells.map((cell:any) => (
                         <Cell x={cell.x} y={cell.y} key={`${cell.x},${cell.y}`}/>
                     ))}
                 </div>
