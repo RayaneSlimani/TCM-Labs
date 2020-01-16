@@ -32,11 +32,9 @@ export default class Game extends React.Component<gameProps, gameState>{
         interval: 100,
         cycle:0
     }
-    
     this.rows = HEIGHT / CELL_SIZE;
     this.cols = WIDTH / CELL_SIZE;
     this.board = this.makeEmptyBoard();
-
     this.makeEmptyBoard = this.makeEmptyBoard.bind(this)
     this.getElementOffset = this.getElementOffset.bind(this)
     this.makeCells = this.makeCells.bind(this)
@@ -48,6 +46,7 @@ export default class Game extends React.Component<gameProps, gameState>{
     this.handleClear = this.handleClear.bind(this)
     this.handleRandom = this.handleRandom.bind(this)
     }
+
     makeEmptyBoard() {
         let board = [] as any;
         for (let y = 0; y < this.rows; y++) {
@@ -79,7 +78,7 @@ export default class Game extends React.Component<gameProps, gameState>{
         }
         return cells;
     }
-    handleClick(event:any){
+    handleClick(event:any) {
         const elemOffset = this.getElementOffset();
         if(elemOffset){
             const offsetX = event.clientX - elemOffset.x
@@ -142,7 +141,7 @@ export default class Game extends React.Component<gameProps, gameState>{
         }
         return neighbors;
     }
-    handleIntervalChange(event:any){
+    handleIntervalChange(event:any) {
         this.setState({ interval: event.target.value })
     }
     handleClear() {
