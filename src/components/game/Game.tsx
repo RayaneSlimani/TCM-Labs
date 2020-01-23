@@ -2,6 +2,7 @@ import React from 'react';
 import Cell from './../cell/Cell'
 import rabbit from './../../img/rabbit.png'
 import turtle from './../../img/turtle.png'
+import {calculateNeighbors} from '../../rules/rules'
 export interface gameProps{
 }
 
@@ -107,7 +108,7 @@ export default class Game extends React.Component<gameProps, gameState>{
         let newBoard = this.makeEmptyBoard() as any;
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
-                let neighbors = this.calculateNeighbors(this.board, x, y);
+                let neighbors = calculateNeighbors({board:this.board, x, y, cols:this.cols, rows:this.rows});
                 if (this.board[y][x]) {
                     if (neighbors === 2 || neighbors === 3) {
                         newBoard[y][x] = true
@@ -129,18 +130,18 @@ export default class Game extends React.Component<gameProps, gameState>{
             }, this.state.interval);
         }
     }
-    calculateNeighbors(board:any, x:number, y:number) {
-        let neighbors = 0;
-        const dirs = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]];
-        for (let i = 0; i < dirs.length; i++) {
-            const dir = dirs[i]
-            let y1 = y + dir[0], x1 = x + dir[1]
-            if (x1 >= 0 && x1 < this.cols && y1 >= 0 && y1 < this.rows && board[y1][x1]) {
-                neighbors++
-            }
-        }
-        return neighbors;
-    }
+    // calculateNeighbors(board:any, x:number, y:number) {
+    //     let neighbors = 0;
+    //     const dirs = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]];
+    //     for (let i = 0; i < dirs.length; i++) {
+    //         const dir = dirs[i]
+    //         let y1 = y + dir[0], x1 = x + dir[1]
+    //         if (x1 >= 0 && x1 < this.cols && y1 >= 0 && y1 < this.rows && board[y1][x1]) {
+    //             neighbors++
+    //         }
+    //     }
+    //     return neighbors;
+    // }
     handleIntervalChange(event:any) {
         this.setState({ interval: event.target.value })
     }
