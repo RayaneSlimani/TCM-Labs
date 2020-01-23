@@ -2,7 +2,7 @@ import React from 'react';
 import Cell from './../cell/Cell'
 import rabbit from './../../img/rabbit.png'
 import turtle from './../../img/turtle.png'
-import {calculateNeighbors} from '../../rules/rules'
+import {calculateNeighbors, makeEmptyBoard} from '../../rules/rules'
 export interface gameProps{
 }
 
@@ -35,8 +35,8 @@ export default class Game extends React.Component<gameProps, gameState>{
     }
     this.rows = HEIGHT / CELL_SIZE;
     this.cols = WIDTH / CELL_SIZE;
-    this.board = this.makeEmptyBoard();
-    this.makeEmptyBoard = this.makeEmptyBoard.bind(this)
+    this.board = makeEmptyBoard({rows:this.rows, cols:this.cols}) as any
+    // this.makeEmptyBoard = this.makeEmptyBoard.bind(this)
     this.getElementOffset = this.getElementOffset.bind(this)
     this.makeCells = this.makeCells.bind(this)
     this.handleClick = this.handleClick.bind(this)
@@ -48,16 +48,16 @@ export default class Game extends React.Component<gameProps, gameState>{
     this.handleRandom = this.handleRandom.bind(this)
     }
 
-    makeEmptyBoard() {
-        let board = [] as any;
-        for (let y = 0; y < this.rows; y++) {
-            board[y] = [];
-            for (let x = 0; x < this.cols; x++) {
-                board[y][x] = false;
-            }
-        }
-        return board;
-    }
+    // makeEmptyBoard() {
+    //     let board = [] as any;
+    //     for (let y = 0; y < this.rows; y++) {
+    //         board[y] = [];
+    //         for (let x = 0; x < this.cols; x++) {
+    //             board[y][x] = false;
+    //         }
+    //     }
+    //     return board;
+    // }
     getElementOffset() {
         if(this.boardRef){
             const rect = this.boardRef.getBoundingClientRect()
@@ -105,7 +105,7 @@ export default class Game extends React.Component<gameProps, gameState>{
         }
     }
     runIteration() {
-        let newBoard = this.makeEmptyBoard() as any;
+        let newBoard = makeEmptyBoard({rows:this.rows, cols:this.cols}) as any;
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
                 let neighbors = calculateNeighbors({board:this.board, x, y, cols:this.cols, rows:this.rows});
@@ -130,23 +130,12 @@ export default class Game extends React.Component<gameProps, gameState>{
             }, this.state.interval);
         }
     }
-    // calculateNeighbors(board:any, x:number, y:number) {
-    //     let neighbors = 0;
-    //     const dirs = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]];
-    //     for (let i = 0; i < dirs.length; i++) {
-    //         const dir = dirs[i]
-    //         let y1 = y + dir[0], x1 = x + dir[1]
-    //         if (x1 >= 0 && x1 < this.cols && y1 >= 0 && y1 < this.rows && board[y1][x1]) {
-    //             neighbors++
-    //         }
-    //     }
-    //     return neighbors;
-    // }
+
     handleIntervalChange(event:any) {
         this.setState({ interval: event.target.value })
     }
     handleClear() {
-        this.board = this.makeEmptyBoard();
+        this.board = makeEmptyBoard({rows:this.rows, cols:this.cols}) as any;
         this.setState({ cells: this.makeCells(), cycle: 0 })
     }
     handleRandom() {

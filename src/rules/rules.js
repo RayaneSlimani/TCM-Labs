@@ -10,3 +10,14 @@ export function calculateNeighbors({board, x, y, cols, rows}) {
     }
     return neighbors;
 }
+
+export function makeEmptyBoard({rows, cols}) {
+    let board = [];
+    for (let y = 0; y < rows; y++) {
+        board[y] = [];
+        for (let x = 0; x < cols; x++) {
+            board[y][x] = false;
+        }
+    }
+    return board;
+}
